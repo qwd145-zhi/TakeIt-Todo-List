@@ -6,7 +6,6 @@
 
 | 项目 | 版本 |
 |---|---|
-| 模组 ID | `takeit_todo` |
 | Minecraft | 26.2 |
 | Fabric Loader | 0.20.1+ |
 | Fabric API | 任意 26.2 版本 |
