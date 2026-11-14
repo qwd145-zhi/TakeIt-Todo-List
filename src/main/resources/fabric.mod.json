@@ -7,6 +7,9 @@
 	"authors": [
 		"ShangL"
 	],
+	"contact": {
+		"sources": "https://github.com/qwd145-zhi/TakeIt-Todo-List"
+	},
 	"license": "LGPL-3.0-only",
 	"icon": "assets/takeit_todo/icon.png",
 	"environment": "*",
