@@ -27,11 +27,11 @@ A client-side todo list mod: developed with DeepSeek (praise! — AI is so matur
 
 | Todo List | HUD Position Settings |
 |---|---|
-| ![](docs/screenshots/todo-screen.png) | ![](docs/screenshots/hud-position-screen.png) |
+| ![](docs/screenshots/todo-screen-en.png) | ![](docs/screenshots/hud-position-screen-en.png) |
 
 | Config Menu | List Management |
 |---|---|
-| ![](docs/screenshots/config-screen.png) | ![](docs/screenshots/list-manage-screen.png) |
+| ![](docs/screenshots/config-screen-en.png) | ![](docs/screenshots/list-manage-screen-en.png) |
 
 ## Multiple Lists and Display Rules
 
