@@ -22,7 +22,7 @@ public final class TodoList {
     /** 清单名长度上限（按字符算）。 */
     public static final int MAX_NAME_LENGTH = 32;
 
-    /** 默认清单名：首次启动与迁移旧数据时使用。 */
+    /** 默认清单名：一份清单都没有时用它兜底。 */
     public static final String DEFAULT_NAME = "默认";
 
     private static final String FILE_PREFIX = "todo_";

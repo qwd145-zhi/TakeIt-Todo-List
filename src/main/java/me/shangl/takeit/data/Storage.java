@@ -22,12 +22,11 @@ import java.util.stream.Stream;
  * config/takeit_todo/
  *   settings.json          全局开关：HUD 开关/条数、全局清单、最近清单、服务器判定模式
  *   bindings.json          单存档 / 单服务器 → 清单 的绑定表
- *   hud_position.json      HUD 位置（锚点 + 偏移量，格式同旧版）
+ *   hud_position.json      HUD 位置（锚点 + 偏移量）
  *   lists/todo_&lt;清单名&gt;.json  每份待办清单一个文件
  * </pre>
  *
- * <p>首次启动时若存在旧版 {@code config/takeit_todo/todos.json}，会迁移成清单「默认」；
- * 旧文件保留不删，方便回滚。</p>
+ * <p>目录与文件在首次写入时按需创建，不需要预置任何内容。</p>
  *
  * <p>写入采用「先写临时文件再原子替换」，避免游戏崩溃时留下半截 JSON。</p>
  */
@@ -42,7 +41,6 @@ public final class Storage {
     private static final String BINDINGS_FILE = "bindings.json";
     private static final String HUD_FILE = "hud_position.json";
     private static final String LISTS_DIR = "lists";
-    private static final String LEGACY_TODO_FILE = "todos.json";
 
     private Storage() {
     }
@@ -53,11 +51,6 @@ public final class Storage {
 
     public static Path configDir() {
         return FabricLoader.getInstance().getConfigDir().resolve("takeit_todo");
-    }
-
-    /** 旧目录名：0.x 版的 modid 是 takeit，首次启动时整体搬过来，避免玩家数据丢失。 */
-    private static Path legacyConfigDir() {
-        return FabricLoader.getInstance().getConfigDir().resolve("takeit");
     }
 
     public static Path listsDir() {
@@ -76,44 +69,16 @@ public final class Storage {
         return configDir().resolve(HUD_FILE);
     }
 
-    /** 旧版单文件待办（只读，用于迁移）。 */
-    public static Path legacyTodoFile() {
-        return configDir().resolve(LEGACY_TODO_FILE);
-    }
-
     public static Path listFile(String name) {
         return listsDir().resolve(TodoList.fileName(name));
     }
 
-    /** 建立目录并做一次旧数据迁移；可重复调用。 */
+    /** 建立配置目录；可重复调用。 */
     public static void init() {
-        migrateConfigDir();
         try {
             Files.createDirectories(listsDir());
         } catch (IOException e) {
             TakeIt.LOGGER.warn("[takeit_todo] 无法创建配置目录 {}：{}", listsDir(), e.toString());
-            return;
-        }
-        migrateLegacy();
-    }
-
-    /**
-     * 配置目录改名：{@code config/takeit} → {@code config/takeit_todo}。
-     *
-     * <p>只在目标目录还不存在、旧目录存在时整体移动一次；移动失败则退回"新目录从零开始"，
-     * 旧数据仍留在原处，不会被删除。</p>
-     */
-    private static void migrateConfigDir() {
-        Path legacy = legacyConfigDir();
-        Path target = configDir();
-        if (Files.exists(target) || !Files.isDirectory(legacy)) {
-            return;
-        }
-        try {
-            Files.move(legacy, target);
-            TakeIt.LOGGER.info("[takeit_todo] 已把旧配置目录 {} 迁移到 {}。", legacy, target);
-        } catch (IOException e) {
-            TakeIt.LOGGER.warn("[takeit_todo] 迁移旧配置目录失败（{}），将使用新目录：{}", e.toString(), target);
         }
     }
 
@@ -234,46 +199,6 @@ public final class Storage {
 
     public static void saveHudPosition(HudPosition position) {
         write(hudFile(), position);
-    }
-
-    // ------------------------------------------------------------------
-    // 旧数据迁移
-    // ------------------------------------------------------------------
-
-    /**
-     * 旧版把待办、HUD 开关、显示条数都塞在 todos.json 里。首次启动（lists/ 为空）
-     * 时把它迁移成清单「默认」，同时带走 HUD 开关与显示条数。
-     */
-    private static void migrateLegacy() {
-        Path legacy = legacyTodoFile();
-        if (!Files.exists(legacy) || !listNames().isEmpty()) {
-            return;
-        }
-        LegacyTodoFile old = read(legacy, LegacyTodoFile.class);
-        TodoList list = new TodoList(TodoList.DEFAULT_NAME);
-        if (old != null) {
-            // 直接接管旧文件里的列表引用：Gson 是反射填充的，IDEA 看不到赋值过程，
-            // 这里不做防御性拷贝，交给 normalize() 统一兜底 null / 非法条目。
-            list.items = old.items;
-        }
-        list.normalize();
-        saveList(list);
-
-        Settings settings = loadSettings();
-        if (old != null) {
-            settings.hudVisible = old.hudVisible;
-            settings.hudMaxItems = old.hudMaxItems;
-        }
-        settings.lastUsedList = list.name;
-        saveSettings(settings);
-        TakeIt.LOGGER.info("[takeit_todo] 已把旧版 {} 迁移为清单「{}」（原文件保留未动）。", legacy, list.name);
-    }
-
-    /** 旧版 todos.json 的精简视图，只读迁移用。 */
-    private static final class LegacyTodoFile {
-        boolean hudVisible = true;
-        int hudMaxItems = Settings.DEFAULT_HUD_MAX_ITEMS;
-        List<TodoItem> items;
     }
 
     // ------------------------------------------------------------------
