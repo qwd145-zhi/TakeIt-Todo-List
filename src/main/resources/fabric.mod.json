@@ -8,6 +8,7 @@
 		"ShangL"
 	],
 	"contact": {
+		"homepage": "https://modrinth.com/mod/takeit-todo",
 		"sources": "https://github.com/qwd145-zhi/TakeIt-Todo-List"
 	},
 	"license": "LGPL-3.0-only",
