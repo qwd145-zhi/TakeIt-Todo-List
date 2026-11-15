@@ -1,3 +1,5 @@
+[English](README_en.md)
+
 # TakeIt Todo List
 
 客户端待办清单模组：使用DeepSeek开发（赞美大肥鱼，现在AI太成熟了，生成模组后我只对极少量的代码进行了修改）。
