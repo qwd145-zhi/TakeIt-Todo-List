@@ -50,8 +50,6 @@ A client-side todo list mod: developed with DeepSeek (praise! — AI is so matur
 
 Everything lives in `config/takeit_todo/`; manual edits take effect the next time you enter a world:
 
-> When upgrading from an older version (mod ID `takeit`), the first launch renames the entire `config/takeit/` directory to
-> `config/takeit_todo/`, keeping lists, bindings, HUD position, and the blacklist intact.
 
 ```
 config/takeit_todo/

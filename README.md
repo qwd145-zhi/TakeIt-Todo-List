@@ -50,8 +50,6 @@
 
 全部在 `config/takeit_todo/`，手动编辑后重新进入世界即生效：
 
-> 从旧版本（模组 ID 为 `takeit`）升级时，首次启动会把整个 `config/takeit/` 目录改名为
-> `config/takeit_todo/`，清单、绑定、HUD 位置与黑名单都原样保留。
 
 ```
 config/takeit_todo/
